@@ -15,12 +15,22 @@ ORDER BY 1
 -- This query joins the world_cup and fifa_rankings tables. The world_cup table has the champion data and the fifa_rankings table has the association data
 --The group by function here has combines the rows based on the champion team's association
 -- Those rows are then counted in the SELECT clause, thus returning the number of WC wins by association
+-- West GGermany no longer exists, and thus is nowhere on the Fifa Rankings Table. 
 
-SELECT rank.association, COUNT(*) AS wins_by_assoc
+SELECT 
+    CASE
+        WHEN cup.champion = 'West Germany' THEN 'N/A'
+        ELSE rank.association
+    END AS association,
+    COUNT(cup.champion) AS wins_by_assoc
 FROM WorldCupProject..fifa_ranking AS rank
-JOIN WorldCupProject..world_cup AS cup
+RIGHT JOIN WorldCupProject..world_cup AS cup
 ON rank.team = cup.champion
-GROUP BY rank.association;
+GROUP BY 
+    CASE
+        WHEN cup.champion = 'West Germany' THEN 'N/A'
+        ELSE rank.association
+    END;
 
 
 
